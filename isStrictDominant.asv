@@ -1,0 +1,8 @@
+function isDom = isStrictDominant(A)
+
+    isA = false;
+                break;
+            end
+        end
+    end
+end
