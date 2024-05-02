@@ -37,15 +37,13 @@ xhat0 = A\b % solution initiale
 nit = 20;
 rr = zeros(n,nit+1); eehat = zeros(n,nit+1);
 
-% <initialisations de r, ehat, xhat>
-
 xhat = xhat0;
 
 r = b - A * xhat;
 
 for i = 1:nit
     % calcul de ehat en partant de r = A*e et donc LU*e
-    % permet deviter l'utilisation de e = A**-1*r
+    % permet deviter l'utilisation de e = A**-1*r (operation d'inversion)
     y = L\r;
     ehat = U\y;
     
@@ -59,12 +57,16 @@ for i = 1:nit
 end
 % Question 4 :
 
-% 1 .verification de la dominance diagonal
+% 1 .verification de la dominance diagonal 
+% (voir fichier isStrictDominant.m)
 isAStrictlyDominant = isStrictDominant(A);
 
 if isAStrictlyDominant
     fprintf('les méthodes de Jacobi et Gauss-Seidel sont convergentes\n')  
 else 
+
+    % 2 .verification de la symetrie definie positif  
+    % (voir fichier isSymetricDefinedPos.m)
     isASym = isSymetricDefinedPos(A);
 
     D = diag(diag(A));
@@ -80,7 +82,7 @@ else
         L = tril(A, -1);
         U = triu(A, 1);
 
-        % gauss seidel
+        % creation de la matrice d'iteration gauss seidel
         [LG UG] = lu(D + L);
         y = LG\U;
         XG = UG\y;
@@ -93,7 +95,7 @@ else
             fprintf('la méthode de Gauss-Seidel est pas convergente.\n')
         end
         
-        % jacobi
+        % creation de la matrice d'iteration jacobi
         [LJ UJ] = lu(D);
         y = LJ\(L+U);
         XJ = UJ\y;
@@ -111,20 +113,21 @@ else
     end
 end
 
-%
 
-figure(1)   
 normrr = sqrt(sum(rr.^2));
+figure;
 plot((0:nit),log10(normrr),'b','linewidth',3)
 hold on
 plot((0:nit),log10(normrr),bullet{:})
 hold off
+title('Evolution de la norme rr');
 
-figure(2)
 normeehat = sqrt(sum(eehat.^2));
+figure;
 plot((0:nit),log10(normeehat),'b','linewidth',3)
 hold on
 plot((0:nit),log10(normeehat),bullet{:})
 hold off
+title('Evolution de la norme eehat');
 
 
